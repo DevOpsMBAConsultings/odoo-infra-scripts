@@ -6,5 +6,5 @@ chmod +x nginx/run.sh
 chmod +x nginx/scripts/*.sh
 
 echo "==> Running nginx/run.sh"
-sudo ./nginx/run.sh
+./nginx/run.sh
 EOF
