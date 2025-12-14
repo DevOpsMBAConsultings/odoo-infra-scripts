@@ -13,4 +13,14 @@ else
   echo "Test: http://<SERVER_PUBLIC_IP>"
 fi
 echo ""
+
+if ! systemctl is-active --quiet nginx; then
+  echo "❌ Nginx is NOT running"
+  echo "❌ Installation failed"
+  exit 1
+fi
+
+echo "✅ Nginx is running"
+echo "✅ Installation completed successfully"
+
 EOF

@@ -8,10 +8,8 @@ cd "$REPO_ROOT"
 ENV_FILE="nginx/env/.env"
 
 if [ ! -f "$ENV_FILE" ]; then
-  echo "❌ Missing $ENV_FILE"
-  echo "   Create it with: cp nginx/env/example.env nginx/env/.env"
-  echo "   Then edit it:   nano nginx/env/.env"
-  exit 1
+  echo "⚠️  $ENV_FILE not found. Creating default env..."
+  cp nginx/env/example.env "$ENV_FILE"
 fi
 
 # Load env vars
