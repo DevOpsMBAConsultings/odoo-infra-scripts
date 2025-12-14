@@ -1,17 +1,36 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
-ENV_FILE="$(dirname "$0")/../../env/.env"
+# Load env
+ENV_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/env/.env"
+
 if [ ! -f "$ENV_FILE" ]; then
-  echo "❌ Missing env/.env. Copy env/example.env to env/.env first."
+  echo "❌ Missing nginx/env/.env"
   exit 1
 fi
-source "$ENV_FILE"
 
-if [ "$USE_UFW" = "true" ]; then
-  sudo ufw allow 'Nginx Full' || true
-  sudo ufw status
-  echo "✅ UFW updated (Nginx Full)"
-else
-  echo "ℹ️ USE_UFW=false, skipping UFW"
+set -a
+source "$ENV_FILE"
+set +a
+
+if [ "${USE_UFW:-true}" != "true" ]; then
+  echo "ℹ️ USE_UFW=false, skipping firewall configuration"
+  exit 0
 fi
+
+echo "==> Configuring UFW firewall rules"
+
+# Ensure UFW is enabled
+ufw --force enable
+
+# Open required ports explicitly
+ufw allow 80/tcp
+ufw allow 443/tcp
+
+# Optional: allow Odoo internally (can be removed later)
+ufw allow 8069/tcp || true
+
+ufw reload
+
+echo "✅ UFW configured:"
+ufw status
